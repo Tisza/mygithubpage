@@ -1,4 +1,73 @@
 body {
     margin: 0;
-    font-family: Helvetica, sans-serif;
+    font-family: "trebuchet ms", sans-serif;
+    background-color: #dddddd;
+}
+#wrapper {
+    margin: auto;
+    max-width: 1200pt;
+    min-width: 500pt;
+    background-color: #ffffff;
+    padding: 50pt 0 0 0;
+}
+#wrapper, #header, #footer {
+    width: 80%;
+}
+#wrapper, #header {
+    overflow: hidden;
+}
+#header {
+    height: 50pt;
+    font-size: 38pt;
+    position: fixed;
+    top: 0;
+}
+#header > p {
+    margin: 0;
+    text-indent: 0;
+    float: left;
+    display: block;
+}
+#header > #nav {
+    float: right;
+}
+.loc {
+    float: left;
+    margin: 5pt;
+    width: 40pt;
+    height: 40pt;
+    background-color: white;
+    border-radius: 50%;
+    border: 1pt solid #000000;
+    opacity: 0.25;
+    transition: opacity, 1s;
+}
+.loc:hover {
+    opacity: 1;
+}
+#footer {
+    position: fixed;
+    bottom: 0;
+    transition: bottom, 1s;
+}
+#footer p {
+    margin: 0;
+}
+#header, #footer, .title {
+    background-color: #7F7FFF;
+    color: #ffffff;
+}
+.section p {
+    display: hidden;
+}
+.title {
+    font-weight: bold;
+}
+.title > p {
+    text-indent: 15pt;
+    margin: 0;
+    padding: 5pt 0;
+}
+p {
+    text-indent: 15pt;
 }
