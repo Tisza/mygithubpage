@@ -1,73 +1,52 @@
 body {
     margin: 0;
     font-family: "trebuchet ms", sans-serif;
-    background-color: #dddddd;
 }
-#wrapper {
+#wrapper, header {
     margin: auto;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 800px;
+}
+header, h2 {
+    border: solid #6666ff;
+}
+header {
     background-color: #ffffff;
-    padding: 50pt 0 0 0;
-}
-#wrapper, #header, #footer {
-    width: 80%;
-    max-width: 1200pt;
-    min-width: 500pt;
-}
-#wrapper, #header {
-    overflow: hidden;
-}
-#header {
-    height: 50pt;
-    font-size: 38pt;
     position: fixed;
-    top: 0;
+    top: 0px;
+    height: 100px;
+    border-width: 0 0 16px 0;
+    text-indent: 100px;
+    z-index: 1;
 }
-#header > p {
+header h1 {
+    font-size: 100px;
     margin: 0;
-    text-indent: 0;
-    float: left;
-    display: block;
 }
-#header > #nav {
-    float: right;
-}
-.loc {
-    float: left;
-    margin: 5pt;
-    width: 40pt;
-    height: 40pt;
-    background-color: white;
-    border-radius: 50%;
-    border: 1pt solid #000000;
-    opacity: 0.25;
-    transition: opacity, 1s;
-}
-.loc:hover {
-    opacity: 1;
-}
-#footer {
+nav {
     position: fixed;
-    bottom: 0;
-    transition: bottom, 1s;
+    width: 100px;
+    z-index: 2;
+    top: 0px;
 }
-#footer p {
+nav ul {
+    list-style-type: none;
+    padding-left: 10pt;
     margin: 0;
 }
-#header, #footer, .title {
-    background-color: #7F7FFF;
-    color: #ffffff;
-}
-.section p {
-    display: hidden;
-}
-.title {
-    font-weight: bold;
-}
-.title > p {
-    text-indent: 15pt;
+nav li {
+    font-size: 16px;
     margin: 0;
-    padding: 5pt 0;
+    padding: 0;
+    cursor: pointer;
 }
-p {
-    text-indent: 15pt;
+aside {
+    margin: 0 0 0 100px;
+    padding: 100px 0 0 0;
+
+}
+h2 {
+    color: #6666ff;
+    border-width: 0 0 1px 0;
 }
