@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: "trebuchet ms", sans-serif;
+    font-family: "trebuchet ms", arial, sans-serif;
 }
 #wrapper, header {
     margin: auto;
@@ -49,4 +49,26 @@ aside {
 h2 {
     color: #6666ff;
     border-width: 0 0 1px 0;
+}
+aside li {
+    display: inline-block;
+    width: 46%;
+    background-color: #6666ff;
+    margin: 1%;
+    padding: 5pt;
+}
+aside li:first-line {
+    font-weight: 900;
+}
+aside p {
+    margin: 0;
+}
+abbr {
+    border-style: dotted;
+    border-width: 0 0 1pt 0;
+    border-color: #000066;
+    color: #000066;
+}
+a {
+    color: #0000ff;
 }

@@ -55,9 +55,8 @@
             var li = document.createElement("li");
             li.innerHTML = h2[i].innerHTML;
             li.amt = h2[i].offsetTop;
-            li.addEventListener("click", function(event, target) {
-                scrollTo(event.target.amt);
-            }, 10);
+            li.tag = h2[i].id;
+            li.addEventListener("click", linkHandler);
             ul.appendChild(li);
         }
         nav.appendChild(ul);
@@ -82,6 +81,12 @@
         var id = window.location.hash.substring(1);
         if(id) {
             scrollTo($(id).offsetTop);
+        }
+
+        // Protect all the links! Hijacks? In ~MY~ website?
+        var links = document.querySelectorAll("a");
+        for(var i = 0; i < links.length; i++) {
+            links[i].target = "_blank";
         }
     });
 
@@ -152,6 +157,14 @@
         if(Math.abs(amt) < n || window.pageYOffset == cur) {
             clearInterval(scroll);
         }
+    }
+
+    // Navigation link handling
+    function linkHandler(event) {
+        var cur = window.pageYOffset;
+        window.location.hash = "#" + event.target.tag;
+        window.scrollTo(currentX, cur);
+        scrollTo(event.target.amt);
     }
 
 }());
