@@ -43,25 +43,33 @@ nav li {
 }
 aside {
     margin: 0 0 0 100px;
-    padding: 100px 0 0 0;
+    padding: 116px 0 0 0;
 
 }
 h2 {
-    color: #6666ff;
-    border-width: 0 0 1px 0;
+    /* color: #6666ff;
+    border-width: 0 0 1px 0; */
+    background-color: #6666ff;
+    color: #ffffff;
+    margin: 0;
+}
+aside ul {
+    padding: 0;
 }
 aside li {
-    display: inline-block;
-    width: 46%;
-    background-color: #6666ff;
-    margin: 1%;
+    display: block;
+    background-color: #eeeeff;
     padding: 5pt;
+    margin: 5pt;
 }
 aside li:first-line {
     font-weight: 900;
+    color: #6666ff;
 }
 aside p {
     margin: 0;
+    text-indent: 15pt;
+    padding: 5pt;
 }
 abbr {
     border-style: dotted;

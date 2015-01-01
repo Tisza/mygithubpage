@@ -48,11 +48,11 @@
 
         // sets up header location information and nav
         pages = new Array();
+        createPages();
         var h2 = document.querySelectorAll("h2");
         var ul = document.createElement("ul");
         for(var i = 0; i < h2.length; i++) {
-            pages[pages.length] = h2[i].offsetTop;
-            var li = document.createElement("li");
+            var li =        document.createElement("li");
             li.innerHTML = h2[i].innerHTML;
             li.amt = h2[i].offsetTop;
             li.tag = h2[i].id;
@@ -60,7 +60,6 @@
             ul.appendChild(li);
         }
         nav.appendChild(ul);
-        pages[pages.length] = window.outerHeight;
         // sets this once because its annoying...
         nav.height = parseInt(window.getComputedStyle(nav).height);
         // initial scroll calls
@@ -75,7 +74,10 @@
                 scrollY();
             }
         });
-        window.addEventListener("resize", scrollX);
+        window.addEventListener("resize", function() {
+            scrollX();
+            createPages();
+        });
 
         // if you've loaded from a page, scroll correctly to it
         var id = window.location.hash.substring(1);
@@ -105,27 +107,22 @@
         nav.refresh();
         var minHeight = Math.max(40, nav.height - 16);
         if(currentY < minHeight || newY < minHeight || !head.tucked) {
-            transitionHead(Math.max(minHeight, 100 - newY));
-            if(Math.max(minHeight, 100 - newY) == minHeight) {
-                head.tucked = true;
-            } else {
-                head.tucked = false;
-            }
+            transitionHead(Math.max(minHeight, 100 - newY), minHeight);
         }
         nav.style.top = -nav.pos + nav.val + "px";
         currentY = newY;
     }
 
     // Smooth transition of header size
-    function transitionHead(target) {
+    function transitionHead(target, minHeight) {
         if(trans) {
             clearInterval(trans);
         }
-        trans = setInterval(transitionHelper, 10, target);
+        trans = setInterval(transitionHelper, 10, target, minHeight);
     }
 
     // The smoother part of the header resizer
-    function transitionHelper(target) {
+    function transitionHelper(target, minHeight) {
         var n = 3;
         var height = parseInt(window.getComputedStyle(head).height);
         var val = height + Math.min(n, Math.max(-n, target - height));
@@ -136,6 +133,11 @@
         nav.refresh();
         if(Math.round(Math.abs(val - height)) == 0) {
             clearInterval(trans);
+            if(height == minHeight) {
+                head.tucked = true;
+            } else {
+                head.tucked = false;
+            }
         }
     }
 
@@ -154,7 +156,7 @@
         var n = 25;
         var amt = Math.max(-n, Math.min(n, target - hgt - cur));
         window.scrollTo(currentX, cur + amt);
-        if(Math.abs(amt) < n || window.pageYOffset == cur) {
+        if((Math.abs(amt) < n || window.pageYOffset == cur) && (head.tucked || cur == 0)) {
             clearInterval(scroll);
         }
     }
@@ -167,4 +169,13 @@
         scrollTo(event.target.amt);
     }
 
+    // Creates array of headers to heights
+    function createPages() {
+        pages = [];
+        var h2 = document.querySelectorAll("h2");
+        for(var i = 0; i < h2.length; i++) {
+            pages[pages.length] = h2[i].offsetTop;
+        }
+        pages[pages.length] = window.outerHeight;
+    }
 }());
