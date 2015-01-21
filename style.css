@@ -2,15 +2,18 @@ body {
     margin: 0;
     font-family: "trebuchet ms", arial, sans-serif;
 }
+
 #wrapper, header {
     margin: auto;
     width: 100%;
     max-width: 1200px;
     min-width: 800px;
 }
+
 header, h2 {
     border: solid #6666ff;
 }
+
 header {
     background-color: #ffffff;
     position: fixed;
@@ -18,65 +21,112 @@ header {
     height: 100px;
     border-width: 0 0 16px 0;
     text-indent: 100px;
-    z-index: 1;
+    z-index: 2;
 }
+
 header h1 {
     font-size: 100px;
     margin: 0;
+    position: relative;
 }
+
 nav {
     position: fixed;
     width: 100px;
-    z-index: 2;
+    z-index: 3;
     top: 0px;
 }
+
 nav ul {
     list-style-type: none;
     padding-left: 10pt;
     margin: 0;
 }
+
 nav li {
     font-size: 16px;
     margin: 0;
     padding: 0;
     cursor: pointer;
 }
+
 aside {
     margin: 0 0 0 100px;
     padding: 116px 0 0 0;
 
 }
+
 h2 {
-    /* color: #6666ff;
-    border-width: 0 0 1px 0; */
-    background-color: #6666ff;
-    color: #ffffff;
     margin: 0;
 }
+
+h2, .connect {
+    background-color: #6666ff;
+    color: #ffffff;
+}
+
 aside ul {
     padding: 0;
 }
+
 aside li {
     display: block;
     background-color: #eeeeff;
     padding: 5pt;
     margin: 5pt;
 }
-aside li:first-line {
-    font-weight: 900;
+
+aside li:first-line, footer {
     color: #6666ff;
 }
+
 aside p {
     margin: 0;
     text-indent: 15pt;
     padding: 5pt;
 }
+
 abbr {
     border-style: dotted;
     border-width: 0 0 1pt 0;
     border-color: #000066;
     color: #000066;
 }
+
 a {
     color: #0000ff;
+}
+
+.connect {
+    float: left;
+    width: 100pt;
+    height: 100pt;
+    overflow: hidden;
+    margin: 15pt;
+    box-shadow: 0pt 0pt 0 0 #888888;
+    transition: box-shadow 1s, top 1s, left 1s;
+    position: relative;
+    top: 0pt;
+    left: 0pt;
+    cursor: pointer;
+    line-height: 100pt;
+    text-align: center;
+}
+.connect:hover {
+    box-shadow: 10pt 10pt 0 0 #cccccc;
+    top: -5pt;
+    left: -5pt;
+}
+
+canvas {
+    position: absolute;
+    bottom: -8px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+footer {
+    clear: both;
 }
