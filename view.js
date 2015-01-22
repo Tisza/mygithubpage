@@ -7,7 +7,7 @@
 
     // canvas context
     var ctx;
-    var fg = "#6666ff";
+    var fg = "#0099CC";
     var bg = "#ffffff";
 
     // onload
