@@ -120,7 +120,7 @@ a {
 
 canvas {
     position: absolute;
-    bottom: -8px;
+    bottom: -16px;
 }
 
 .hidden {
