@@ -45,6 +45,13 @@ function vector(canvas) {
         LIGHT_Y = vec3[1];
         shade();
     });
+    window.addEventListener("touchmove", function(e) {
+        var t = e.touches[0];
+        var vec3 = screen2vector([t.clientX, t.clientY], LIGHT_Z);
+        LIGHT_X = vec3[0];
+        LIGHT_Y = vec3[1];
+        shade();
+    })
     
     // fields.
     var points = new Array(); // x y z
