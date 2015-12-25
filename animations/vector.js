@@ -22,7 +22,7 @@ function vector(canvas) {
     var ALTER_ZOOM = false; // weather to alter zoom on screen size change.
     
     var BASE_Z = 1000; // furthest z distance.
-    var VAR_Z = 50; // distance variance.
+    var VAR_Z = 500; // distance variance.
     var LIGHT_Z = 500; // point light plane.
     
     var MIN_NUM_PTS = 5; // does not include corner points, must be greater than 0.
@@ -32,14 +32,24 @@ function vector(canvas) {
     // - - - - - - - - - - - - - - -
     var WIDTH = canvas.width; // pixels.
     var HEIGHT = canvas.height; // pixels.
+    var LIGHT_X = 0; // vector
+    var LIGHT_Y = 0; // vector
     // add hook to recalculate WIDTH, HEIGHT, IMG_Z/FIELD_OF_VISION.
     window.addEventListener("resize", calculateFrame); 
     // initial camera calculations
     calculateImagePlane();
+    // add hook for pointlight
+    window.addEventListener("mousemove", function(e) {
+        var vec3 = screen2vector([e.clientX, e.clientY], LIGHT_Z);
+        LIGHT_X = vec3[0];
+        LIGHT_Y = vec3[1];
+        shade();
+    });
     
     // fields.
-    var points = new Array();
-    var edges = new Array();
+    var points = new Array(); // x y z
+    var edges = new Array(); // x y z
+    var triangles = new Array(); // x y z normal:{x y z}
     
     // calculates the new width/height and camera constants.
     function calculateFrame() {
@@ -47,6 +57,7 @@ function vector(canvas) {
         HEIGHT = canvas.height;
         calculateImagePlane();
         generatePoints();
+        generateEdges();
         draw();
     }
     
@@ -157,7 +168,6 @@ function vector(canvas) {
                     curEdges.push(val);
                 }
             });
-            console.log("Edges: " + curEdges.length);
             // connect all the permutations you can!
             var a;
             var b;
@@ -176,7 +186,8 @@ function vector(canvas) {
                         }
                         if (testLine(a, b)) {
                             edges.push([a, b]);
-                            console.log("adding edgesss [ " + a + ", " + b + "]");
+                            var norm = calcNorm(points[a], points[b], points[node]);
+                            triangles.push([a, b, node, norm]);
                         }
                     }
                 });
@@ -243,6 +254,23 @@ function vector(canvas) {
                         Math.pow(a[2] - b[2], 2), 0.5);
     }
     
+    // calculates the normal, normalizes it, and forces it to face in the -z direction.
+    function calcNorm(a, b, c) {
+        // a x b = (refer to https://upload.wikimedia.org/wikipedia/commons/c/c1/Sarrus_rule_cross_product.svg)
+        var ac = [a[0] - c[0], a[1] - c[1], a[2] - c[2]];
+        var bc = [b[0] - c[0], b[1] - c[1], b[2] - c[2]];
+        var i = ac[1] * bc[2] - ac[2] * bc[1];
+        var j = ac[2] * bc[0] - ac[0] * bc[2];
+        var k = ac[0] * bc[1] - ac[1] * bc[0];
+        var norm = [i, j, k];
+        var distance = dist(norm, [0, 0, 0]);
+        var nnorm = [norm[0] / distance, norm[1] / distance, norm[2] / distance];
+        if (nnorm[2] > 0) {
+            return [-nnorm[0], -nnorm[1], -nnorm[2]];
+        }
+        return nnorm;
+    }
+    
     // draws the image.
     function draw() {
         var ctx = canvas.getContext("2d");
@@ -250,11 +278,11 @@ function vector(canvas) {
         //ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#000";
         ctx.strokeStyle = "#000";
-        points.forEach(function(val, ind, arr) {
-            var pos = vector2screen(val);
-            var size = (BASE_Z - val[2] + 10) / 5;
-            ctx.fillRect(pos[0] - size / 2, pos[1] - size / 2, size, size);
-        });
+        // points.forEach(function(val, ind, arr) {
+        //    var pos = vector2screen(val);
+        //    var size = (BASE_Z - val[2] + 10) / 5;
+        //    ctx.fillRect(pos[0] - size / 2, pos[1] - size / 2, size, size);
+        //});
         edges.forEach(function(val, ind, arr) {
            ctx.beginPath();
            var from = points[val[0]];
@@ -266,17 +294,47 @@ function vector(canvas) {
            ctx.stroke();
            ctx.closePath();
         });
+        shade();
+    }
+    
+    function shade() {
+        var ctx = canvas.getContext("2d");
+        triangles.forEach(function(val, ind, arr) {
+           var a = vector2screen(points[val[0]]);
+           var b = vector2screen(points[val[1]]);
+           var c = vector2screen(points[val[2]]);
+           ctx.beginPath();
+           ctx.moveTo(a[0], a[1]);
+           ctx.lineTo(b[0], b[1]);
+           ctx.lineTo(c[0], c[1]);
+           
+           // calculate defuse shade.
+           var va = points[val[0]];
+           var vb = points[val[1]];
+           var vc = points[val[2]];
+           var cent = [va[0] / 3 + vb[0] / 3 + vc[0] / 3, 
+                       va[1] / 3 + vb[1] / 3 + vc[1] / 3,
+                       va[2] / 3 + vb[2] / 3 + vc[2] / 3];
+           var light = [LIGHT_X - cent[0], LIGHT_Y - cent[1], LIGHT_Z - cent[2]];
+           var lightdist = dist(light, [0, 0, 0]);
+           var nlight = [light[0] / lightdist, light[1] / lightdist, light[2] / lightdist];
+           var V = nlight[0] * val[3][0] + nlight[1] * val[3][1] + nlight[2] * val[3][2];
+           if (V < 0) {
+               ctx.fillStyle = "#000";
+           } else {
+               var grey = Math.round(V * 255);
+               ctx.fillStyle = "rgb(" + grey + ", " + grey + ", " + grey + ")";
+           }
+           ctx.fill();
+           ctx.closePath();
+        });
     }
     
     // main
     (function() {
-        console.log("Starting up.");
         generatePoints();
-        console.log("generated points.");
         generateEdges();
-        console.log("generated edges.");
         draw();
-        console.log("drawn.");
     })();
     
 }
