@@ -1,9 +1,144 @@
 body {
     margin: 0;
     font-family: arial, sans-serif;
+    color: white;
 }
 
 #cvs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+#wrapper {
+    width: 40em;
+    margin: auto;
+}
+
+header {
+    color: #fff;
+    background-color: #000;
+    transform: rotate(-5deg);
     position: absolute;
     overflow: hidden;
+    left: -5%;
+    width: 110%;
+    text-align: center;
+    padding: 1em;
+}
+
+h1 {
+    display: inline;
+}
+
+h2 {
+    font-style: italic;
+    font-weight: normal;
+    transform: rotate(-5deg);
+    margin: 0 0 2em 0;
+    padding: 0;
+}
+
+p {
+    margin: 0.5em 0 0 0;
+    text-indent: 2em;
+}
+
+#bg {
+    display: block;
+    position: fixed;
+    overflow: hidden;
+    margin-left: -5em;
+    width: 50em;
+    height: 101%;
+    background-color: rgba(0, 0, 0, 0.5);
+    transform: rotate(1deg);
+    border-style: solid;
+    border-color :#000;
+    border-width: 0 3px 3px 3px;
+    z-index: -1;
+}
+
+.spacer {
+    height: 4.5em;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+#classes {
+    clear: both;
+}
+
+#classes h3 {
+    clear: both;
+    transform: rotate(5deg);
+    margin: 0 0 -1em 0;
+    padding: 1em 0 0 0;
+}
+
+.class {
+    display: block;
+    float: left;
+    width: 18em;
+    margin: 0.5em;
+    transform: rotate(5deg);
+}
+
+.complete {
+    background-color: #060;
+}
+
+.complete:before {
+    content: url(assets/complete.svg);
+    margin-left: -17.5px;
+}
+
+.current {
+    background-color: #66f;
+}
+
+.current:before {
+    content: url(assets/current.svg);
+    margin-left: -17.5px;
+}
+
+.planned {
+    background-color: #000;
+}
+
+.planned:before {
+    content: url(assets/planned.svg);
+    margin-left: -17.5px;
+}
+
+.button {
+    display: inline-block;
+    background-color: #000;
+    transform: rotate(-5deg);
+    margin: 1em;
+    padding: 0.3em;
+    text-decoration: none;
+    font-weight: 900;
+    color: #fff;
+    border: 0.1em solid #fff;
+    transition: background-color 300ms, transform 300ms;
+}
+
+.button:hover {
+    background-color: #060;
+    transform: rotate(5deg);
+}
+
+footer {
+    clear: both;
+    text-align: center;
+    padding: 3em 0 2em 0;
+}
+
+.heart {
+    color: red;
 }

@@ -28,6 +28,30 @@ function vector(canvas) {
     var MIN_NUM_PTS = 5; // does not include corner points, must be greater than 0.
     var MAX_NUM_PTS = 25; // must be greater than zero.
     
+    // point light distance attenuation = a * dist^2 + b * dist + c
+    var DIST_ATTEN_A = 0;
+    var DIST_ATTEN_B = 0.2;
+    var DIST_ATTEN_C = 0;
+    
+    // triangle colors
+    // rgb = target_rgb +- (var_rgb / 2)
+    var TARGET_RED = 64;
+    var TARGET_GREEN = 200;
+    var TARGET_BLUE = 200;
+    var TARGET_VAR_RED = 128;
+    var TARGET_VAR_GREEN = 50;
+    var TARGET_VAR_BLUE = 50;
+    
+    // point light colors
+    var LIGHT_RED = 255;
+    var LIGHT_GREEN = 255;
+    var LIGHT_BLUE = 255;
+    
+    // background color
+    var BG_RED = 16;
+    var BG_GREEN = 32;
+    var BG_BLUE = 32;
+    
     // DO NOT MODIFY BELOW THIS LINE
     // - - - - - - - - - - - - - - -
     var WIDTH = canvas.width; // pixels.
@@ -56,7 +80,7 @@ function vector(canvas) {
     // fields.
     var points = new Array(); // x y z
     var edges = new Array(); // x y z
-    var triangles = new Array(); // x y z normal:{x y z}
+    var triangles = new Array(); // x y z normal:{x y z} color:{r g b}
     
     // calculates the new width/height and camera constants.
     function calculateFrame() {
@@ -194,7 +218,10 @@ function vector(canvas) {
                         if (testLine(a, b)) {
                             edges.push([a, b]);
                             var norm = calcNorm(points[a], points[b], points[node]);
-                            triangles.push([a, b, node, norm]);
+                            var color = [TARGET_RED + (Math.random() * TARGET_VAR_RED - (TARGET_VAR_RED / 2)),
+                                        TARGET_GREEN + (Math.random() * TARGET_VAR_GREEN - (TARGET_VAR_GREEN / 2)),
+                                        TARGET_BLUE + (Math.random() * TARGET_VAR_BLUE - (TARGET_VAR_BLUE / 2))];
+                            triangles.push([a, b, node, norm, color]);
                         }
                     }
                 });
@@ -281,29 +308,16 @@ function vector(canvas) {
     // draws the image.
     function draw() {
         var ctx = canvas.getContext("2d");
-        //ctx.fillStyle = "#fff";
-        //ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // clear the canvas.
+        ctx.fillStyle = "rgb(" + BG_RED + ", " + BG_GREEN + ", " + BG_BLUE + ")";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#000";
         ctx.strokeStyle = "#000";
-        // points.forEach(function(val, ind, arr) {
-        //    var pos = vector2screen(val);
-        //    var size = (BASE_Z - val[2] + 10) / 5;
-        //    ctx.fillRect(pos[0] - size / 2, pos[1] - size / 2, size, size);
-        //});
-        edges.forEach(function(val, ind, arr) {
-           ctx.beginPath();
-           var from = points[val[0]];
-           var to = points[val[1]];
-           var posfrom = vector2screen(from);
-           var posto = vector2screen(to); 
-           ctx.moveTo(posfrom[0], posfrom[1]);
-           ctx.lineTo(posto[0], posto[1]);
-           ctx.stroke();
-           ctx.closePath();
-        });
+        // shade the triangles.
         shade();
     }
     
+    // shades the triangles using a pointlight at LIGHT_X LIGHT_Y LIGHT_Z
     function shade() {
         var ctx = canvas.getContext("2d");
         triangles.forEach(function(val, ind, arr) {
@@ -323,14 +337,23 @@ function vector(canvas) {
                        va[1] / 3 + vb[1] / 3 + vc[1] / 3,
                        va[2] / 3 + vb[2] / 3 + vc[2] / 3];
            var light = [LIGHT_X - cent[0], LIGHT_Y - cent[1], LIGHT_Z - cent[2]];
-           var lightdist = dist(light, [0, 0, 0]);
-           var nlight = [light[0] / lightdist, light[1] / lightdist, light[2] / lightdist];
+           var lightlen= dist(light, [0, 0, 0]);
+           var nlight = [light[0] / lightlen, light[1] / lightlen, light[2] / lightlen];
+           // Diffuse = B * (L . S) / diff
            var V = nlight[0] * val[3][0] + nlight[1] * val[3][1] + nlight[2] * val[3][2];
+           // Diff = A * dist^2 + B * dist + C
+           var distance = dist(light, cent);
+           V /= DIST_ATTEN_A * Math.pow(distance, 2) + DIST_ATTEN_B * distance + DIST_ATTEN_C; 
            if (V < 0) {
                ctx.fillStyle = "#000";
            } else {
-               var grey = Math.round(V * 255);
-               ctx.fillStyle = "rgb(" + grey + ", " + grey + ", " + grey + ")";
+               var red = Math.round(V * LIGHT_RED * val[4][0]);
+               var green = Math.round(V * LIGHT_GREEN * val[4][1]);
+               var blue = Math.round(V * LIGHT_BLUE * val[4][2]);
+               red = Math.max(Math.min(red, 255), 0);
+               green = Math.max(Math.min(green, 255), 0);
+               blue = Math.max(Math.min(blue, 255), 0);
+               ctx.fillStyle = "rgb(" + red + ", " + green + ", " + blue + ")";
            }
            ctx.fill();
            ctx.closePath();
